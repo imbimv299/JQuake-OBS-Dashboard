@@ -1,0 +1,83 @@
+
+async function loadQuakes() {
+  try {
+    const data = await fetchJSON(
+      "https://api.p2pquake.net/v2/history?codes=551&limit=20"
+    );
+
+    const quakes = data.filter(item => item.code === 551).slice(0,8);
+
+    if (!quakes.length) {
+      $("quakes").innerHTML =
+        '<div class="muted">現在、表示できる地震情報はありません。</div>';
+      $("ticker").textContent = "現在、表示できる地震情報はありません。";
+      return;
+    }
+
+    $("quakes").innerHTML = quakes.map(item => {
+      const name = item.earthquake?.hypocenter?.name || "震源情報なし";
+      const scale = item.earthquake?.maxScale;
+      const intensity = scale != null
+        ? "震度 " + (scale / 10).toFixed(1).replace(".0","")
+        : "震度不明";
+
+      return '<div class="quake"><div class="qrow"><div class="place">' +
+        escapeHTML(name) +
+        '</div><div class="intensity">' + intensity +
+        '</div></div><div class="time">' +
+        escapeHTML(item.time || "") +
+        '</div><div class="meta">' +
+        escapeHTML(item.issue?.type || "地震情報") +
+        '</div></div>';
+    }).join("");
+
+    $("ticker").textContent =
+      "最新の地震情報：" +
+      (quakes[0].earthquake?.hypocenter?.name || "震源情報なし");
+
+    $("status").textContent =
+      "地震更新 " + new Date().toLocaleTimeString("ja-JP");
+
+  } catch(error) {
+    console.error("地震取得エラー:",error);
+    $("quakes").textContent = "地震情報の取得に失敗：" + error.message;
+  }
+}
+
+async function loadNews() {
+  try {
+    const params = new URLSearchParams({
+      query: "world",
+      mode: "ArtList",
+      maxrecords: "7",
+      format: "json",
+      sort: "DateDesc",
+      timespan: "24h"
+    });
+
+    const data = await fetchJSON(
+      "https://api.gdeltproject.org/api/v2/doc/doc?" + params.toString()
+    );
+
+    const articles = (data.articles || []).slice(0,7);
+
+    if (!articles.length) {
+      $("news").textContent = "現在、ニュース記事がありません。";
+      return;
+    }
+
+    $("news").innerHTML = articles.map(article => {
+      return '<div class="news"><a href="' +
+        escapeHTML(article.url || "#") +
+        '" target="_blank" rel="noopener">' +
+        escapeHTML(article.title || "ニュース") +
+        '</a><div class="time">' +
+        escapeHTML(article.domain || "") +
+        '</div></div>';
+    }).join("");
+
+  } catch(error) {
+    console.error("ニュース取得エラー:",error);
+    $("news").textContent = "ニュース取得エラー：" + error.message;
+  }
+}
