@@ -3,736 +3,168 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JQuake OBS Dashboard</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JQuake Mini Overlay</title>
 <style>
-:root {
-  --bg:#071426;
-  --panel:#102744;
-  --line:#24517a;
-  --blue:#42a5ff;
-  --cyan:#79d8ff;
-  --white:#f3f8ff;
-  --muted:#a9bfd6;
-}
-
-* {
-  box-sizing:border-box;
-}
-
-html,body {
-  width:1920px;
-  height:1080px;
-  min-width:1920px;
-  min-height:1080px;
-  margin:0;
-  padding:0;
-  overflow:hidden;
-}
-
-body {
-  background:linear-gradient(135deg,#061323,#0b2440);
-  color:var(--white);
-  font-family:Arial,"Noto Sans JP",sans-serif;
-}
-
-.top {
-  width:1920px;
-  height:85px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 35px;
-  background:#0d2745;
-  border-bottom:3px solid var(--blue);
-}
-
-.brand {
-  font-size:34px;
-  font-weight:800;
-  letter-spacing:1px;
-}
-
-.brand span {
-  color:var(--cyan);
-}
-
-.clock {
-  font-size:32px;
-  font-weight:800;
-  font-variant-numeric:tabular-nums;
-}
-
-main {
-  width:1920px;
-  height:915px;
-  padding:22px;
-  display:grid;
-  grid-template-columns:1.15fr .85fr;
-  gap:22px;
-}
-
-.panel {
-  background:linear-gradient(145deg,#102b49,#0b2038);
-  border:2px solid var(--line);
-  border-radius:18px;
-  padding:24px;
-  min-height:0;
-  box-shadow:0 8px 24px #0003;
-}
-
-h2 {
-  font-size:27px;
-  margin:0 0 20px;
-  color:var(--cyan);
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.dot {
-  display:inline-block;
-  width:13px;
-  height:13px;
-  flex-shrink:0;
-  background:#42b5ff;
-  border-radius:50%;
-  box-shadow:0 0 12px #42b5ff;
-}
-
-.quake-panel {
-  display:flex;
-  flex-direction:column;
-}
-
-.quakes {
-  flex:1;
-  min-height:0;
-  overflow-y:auto;
-  padding-right:12px;
-}
-
-.quake {
-  padding:18px 4px;
-  border-bottom:1px solid #24425f;
-}
-
-.qrow {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-}
-
-.place {
-  font-size:25px;
-  font-weight:800;
-}
-
-.intensity {
-  background:#174b78;
-  border-radius:8px;
-  padding:8px 14px;
-  font-size:19px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.meta {
-  margin-top:8px;
-  color:#d8e9fa;
-  font-size:19px;
-}
-
-.time {
-  margin-top:7px;
-  color:var(--muted);
-  font-size:16px;
-}
-
-.muted {
-  color:var(--muted);
-  font-size:18px;
-  line-height:1.6;
-}
-
-.right {
-  display:grid;
-  grid-template-rows:1.2fr 1fr;
-  gap:22px;
-  min-height:0;
-}
-
-.weather-panel {
-  display:flex;
-  flex-direction:column;
-}
-
-.weathergrid {
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:12px;
-  flex:1;
-  min-height:0;
-  overflow-y:auto;
-  padding-right:8px;
-  align-content:start;
-}
-
-.weatherbox {
-  background:#163655;
-  border-radius:12px;
-  padding:15px;
-  min-width:0;
-}
-
-.wlabel {
-  font-size:16px;
-  color:var(--muted);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.wvalue {
-  font-size:29px;
-  font-weight:800;
-  margin-top:7px;
-}
-
-.wcondition {
-  margin-top:5px;
-  font-size:16px;
-  color:#d8e9fa;
-}
-
-.weatherdesc {
-  margin-top:10px;
-}
-
-.news-panel {
-  display:flex;
-  flex-direction:column;
-  min-height:0;
-}
-
-.newslist {
-  flex:1;
-  min-height:0;
-  overflow-y:auto;
-  padding-right:12px;
-}
-
-.news {
-  padding:15px 0;
-  border-bottom:1px solid #24425f;
-  font-size:21px;
-  line-height:1.5;
-}
-
-.news a {
-  color:var(--white);
-  text-decoration:none;
-}
-
-.news a:hover {
-  color:var(--cyan);
-}
-
-.news-source {
-  margin-top:5px;
-  color:var(--muted);
-  font-size:15px;
-}
-
-footer {
-  width:1920px;
-  height:80px;
-  background:#0d2745;
-  border-top:3px solid var(--blue);
-  display:flex;
-  align-items:center;
-  gap:25px;
-  padding:0 28px;
-  overflow:hidden;
-}
-
-.tag {
-  background:#15558b;
-  color:white;
-  padding:12px 18px;
-  border-radius:8px;
-  font-size:22px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.ticker-window {
-  flex:1;
-  min-width:0;
-  overflow:hidden;
-  white-space:nowrap;
-}
-
-.ticker {
-  display:inline-block;
-  width:max-content;
-  padding-left:100%;
-  font-size:23px;
-  font-weight:700;
-  animation:tickerMove 28s linear infinite;
-}
-
-@keyframes tickerMove {
-  from {
-    transform:translateX(0);
-  }
-  to {
-    transform:translateX(-100%);
-  }
-}
-
-.status {
-  font-size:14px;
-  color:var(--muted);
-  white-space:nowrap;
-}
-
-::-webkit-scrollbar {
-  width:9px;
-}
-
-::-webkit-scrollbar-track {
-  background:#0a1b30;
-  border-radius:8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background:#28618e;
-  border-radius:8px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background:#42a5ff;
-}
+*{box-sizing:border-box}
+html,body{margin:0;width:1100px;height:360px;overflow:hidden;background:transparent;font-family:Arial,"Noto Sans JP",sans-serif;color:#f3f8ff}
+body{padding:5px}
+main{height:310px;display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:9px}
+.panel{background:rgba(8,27,48,.94);border:1px solid #3982b5;border-radius:10px;padding:10px;min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+h2{font-size:19px;color:#79d8ff;margin:0 0 8px;white-space:nowrap}
+.content{overflow-y:auto;min-height:0;flex:1;padding-right:4px}
+.item{padding:7px 2px;border-bottom:1px solid #34516b;font-size:15px;line-height:1.35}
+.sub{font-size:11px;color:#a9bfd6;margin-top:3px}
+.pill{display:inline-block;background:#18527c;border-radius:5px;padding:3px 6px;font-size:12px}
+.weathergrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.weather{background:#163957;border-radius:6px;padding:5px;min-width:0}
+.pref{font-size:11px;color:#b8d1e8;white-space:nowrap}
+.temp{font-size:18px;font-weight:bold;margin-top:2px}
+.condition{font-size:10px;color:#b8d1e8}
+footer{height:38px;margin-top:5px;background:rgba(10,45,75,.96);border:1px solid #3982b5;border-radius:8px;display:flex;align-items:center;overflow:hidden}
+.label{background:#17649b;padding:8px 10px;font-size:14px;font-weight:bold;white-space:nowrap}
+.tickerWindow{flex:1;overflow:hidden;white-space:nowrap}
+.ticker{display:inline-block;padding-left:100%;font-size:16px;animation:move 25s linear infinite}
+@keyframes move{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:#397ba8;border-radius:5px}
 </style>
 </head>
-
 <body>
-
-<header class="top">
-  <div class="brand">
-    JQuake <span>OBS DASHBOARD</span>
-  </div>
-  <div class="clock" id="clock">--:--:--</div>
-</header>
-
 <main>
+<section class="panel">
+<h2>● 地震情報</h2>
+<div class="content" id="quakes">地震情報を取得中...</div>
+</section>
 
-  <section class="panel quake-panel">
-    <h2><i class="dot"></i>地震情報</h2>
-    <div class="quakes" id="quakes">
-      <div class="muted">地震情報を取得しています...</div>
-    </div>
-  </section>
+<section class="panel">
+<h2>● 全国の天気 47都道府県</h2>
+<div class="content">
+<div class="weathergrid" id="weather">天気を取得中...</div>
+</div>
+<div class="sub" id="weatherStatus">Open-Meteo</div>
+</section>
 
-  <div class="right">
-
-    <section class="panel weather-panel">
-      <h2><i class="dot"></i>全国の天気（47都道府県）</h2>
-
-      <div class="weathergrid" id="weathergrid">
-        <div class="muted">全国の天気を取得しています...</div>
-      </div>
-
-      <div class="muted weatherdesc" id="weatherdesc">
-        気象データ：Open-Meteo
-      </div>
-    </section>
-
-    <section class="panel news-panel">
-      <h2><i class="dot"></i>世界のニュース</h2>
-      <div class="newslist" id="news">
-        <div class="muted">ニュースを取得しています...</div>
-      </div>
-    </section>
-
-  </div>
+<section class="panel">
+<h2>● 世界のニュース</h2>
+<div class="content" id="news">ニュースを取得中...</div>
+</section>
 </main>
 
 <footer>
-  <div class="tag">速報・お知らせ</div>
-
-  <div class="ticker-window">
-    <div class="ticker" id="ticker">
-      情報を取得しています...
-    </div>
-  </div>
-
-  <div class="status" id="status">起動中</div>
+<div class="label">速報・お知らせ</div>
+<div class="tickerWindow"><div class="ticker" id="ticker">情報を取得しています...</div></div>
 </footer>
 
 <script>
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, c => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  })[c]);
+async function getJSON(url){
+ const controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(),20000);
+ try{
+  const r=await fetch(url,{signal:controller.signal});
+  if(!r.ok)throw Error("HTTP "+r.status);
+  return await r.json();
+ }finally{clearTimeout(timer)}
 }
 
-/* 時計 */
-
-function updateClock() {
-  $("clock").textContent = new Intl.DateTimeFormat("ja-JP", {
-    timeZone:"Asia/Tokyo",
-    hour:"2-digit",
-    minute:"2-digit",
-    second:"2-digit",
-    hour12:false
-  }).format(new Date());
-}
-
-updateClock();
-setInterval(updateClock,1000);
-
-/* 全国47都道府県 */
-
-const prefectures = [
-["北海道",43.06,141.35],
-["青森",40.82,140.74],
-["岩手",39.70,141.15],
-["宮城",38.27,140.87],
-["秋田",39.72,140.10],
-["山形",38.24,140.36],
-["福島",37.75,140.47],
-["茨城",36.34,140.45],
-["栃木",36.57,139.88],
-["群馬",36.39,139.06],
-["埼玉",35.86,139.65],
-["千葉",35.61,140.12],
-["東京",35.68,139.69],
-["神奈川",35.45,139.64],
-["新潟",37.90,139.02],
-["富山",36.70,137.21],
-["石川",36.59,136.63],
-["福井",36.07,136.22],
-["山梨",35.66,138.57],
-["長野",36.65,138.18],
-["岐阜",35.42,136.76],
-["静岡",34.98,138.38],
-["愛知",35.18,136.91],
-["三重",34.73,136.51],
-["滋賀",35.00,135.87],
-["京都",35.02,135.76],
-["大阪",34.69,135.50],
-["兵庫",34.69,135.18],
-["奈良",34.69,135.83],
-["和歌山",34.23,135.17],
-["鳥取",35.50,134.24],
-["島根",35.47,133.05],
-["岡山",34.66,133.93],
-["広島",34.40,132.46],
-["山口",34.19,131.47],
-["徳島",34.07,134.56],
-["香川",34.34,134.04],
-["愛媛",33.84,132.77],
-["高知",33.56,133.53],
-["福岡",33.59,130.40],
-["佐賀",33.25,130.30],
-["長崎",32.75,129.88],
-["熊本",32.79,130.74],
-["大分",33.24,131.61],
-["宮崎",31.91,131.42],
-["鹿児島",31.56,130.56],
-["沖縄",26.21,127.68]
+const places=[
+["北海道",43.06,141.35],["青森",40.82,140.74],["岩手",39.70,141.15],["宮城",38.27,140.87],
+["秋田",39.72,140.10],["山形",38.24,140.36],["福島",37.75,140.47],["茨城",36.34,140.45],
+["栃木",36.57,139.88],["群馬",36.39,139.06],["埼玉",35.86,139.65],["千葉",35.61,140.12],
+["東京",35.68,139.69],["神奈川",35.45,139.64],["新潟",37.90,139.02],["富山",36.70,137.21],
+["石川",36.59,136.63],["福井",36.07,136.22],["山梨",35.66,138.57],["長野",36.65,138.18],
+["岐阜",35.42,136.76],["静岡",34.98,138.38],["愛知",35.18,136.91],["三重",34.73,136.51],
+["滋賀",35.00,135.87],["京都",35.02,135.76],["大阪",34.69,135.50],["兵庫",34.69,135.18],
+["奈良",34.69,135.83],["和歌山",34.23,135.17],["鳥取",35.50,134.24],["島根",35.47,133.05],
+["岡山",34.66,133.93],["広島",34.40,132.46],["山口",34.19,131.47],["徳島",34.07,134.56],
+["香川",34.34,134.04],["愛媛",33.84,132.77],["高知",33.56,133.53],["福岡",33.59,130.40],
+["佐賀",33.25,130.30],["長崎",32.75,129.88],["熊本",32.79,130.74],["大分",33.24,131.61],
+["宮崎",31.91,131.42],["鹿児島",31.56,130.56],["沖縄",26.21,127.68]
 ];
 
-const weatherLabels = {
-0:"快晴",
-1:"晴れ",
-2:"薄曇り",
-3:"曇り",
-45:"霧",
-48:"霧",
-51:"霧雨",
-53:"霧雨",
-55:"強い霧雨",
-61:"小雨",
-63:"雨",
-65:"大雨",
-71:"小雪",
-73:"雪",
-75:"大雪",
-80:"にわか雨",
-81:"にわか雨",
-82:"強い雨",
-95:"雷雨",
-96:"雷雨",
-99:"雷雨"
+const weatherNames={
+0:"快晴",1:"晴れ",2:"薄曇",3:"曇り",45:"霧",48:"霧",
+51:"霧雨",53:"霧雨",55:"強い霧雨",61:"小雨",63:"雨",65:"大雨",
+71:"小雪",73:"雪",75:"大雪",80:"にわか雨",81:"にわか雨",
+82:"強い雨",95:"雷雨",96:"雷雨",99:"雷雨"
 };
 
-/* API通信 */
-
-async function fetchJSON(url,timeoutMs=20000) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(),timeoutMs);
-
-  try {
-    const response = await fetch(url,{
-      signal:controller.signal
-    });
-
-    if (!response.ok) {
-      throw new Error("HTTP " + response.status);
-    }
-
-    return await response.json();
-
-  } finally {
-    clearTimeout(timer);
-  }
+async function loadWeather(){
+ try{
+  const p=new URLSearchParams();
+  p.set("latitude",places.map(x=>x[1]).join(","));
+  p.set("longitude",places.map(x=>x[2]).join(","));
+  p.set("current","temperature_2m,weather_code");
+  p.set("timezone","Asia/Tokyo");
+  const result=await getJSON("https://api.open-meteo.com/v1/forecast?"+p);
+  const data=Array.isArray(result)?result:[result];
+  if(data.length!==47)throw Error("地点データ不一致");
+  $("weather").innerHTML=places.map((place,i)=>{
+   const c=data[i]?.current;
+   if(!c)return `<div class="weather"><div class="pref">${esc(place[0])}</div>--</div>`;
+   return `<div class="weather"><div class="pref">${esc(place[0])}</div><div class="temp">${Math.round(c.temperature_2m)}°C</div><div class="condition">${weatherNames[c.weather_code]||"不明"}</div></div>`;
+  }).join("");
+  $("weatherStatus").textContent="全国47地点 更新 "+new Date().toLocaleTimeString("ja-JP");
+ }catch(e){
+  console.error(e);
+  $("weather").textContent="天気取得エラー: "+e.message;
+ }
 }
 
-/* 全国の天気 */
-
-async function loadWeather() {
-  $("weatherdesc").textContent = "全国の天気を取得中...";
-
-  try {
-    const params = new URLSearchParams();
-
-    params.set(
-      "latitude",
-      prefectures.map(p => p[1]).join(",")
-    );
-
-    params.set(
-      "longitude",
-      prefectures.map(p => p[2]).join(",")
-    );
-
-    params.set("current","temperature_2m,weather_code");
-    params.set("timezone","Asia/Tokyo");
-
-    const result = await fetchJSON(
-      "https://api.open-meteo.com/v1/forecast?" +
-      params.toString()
-    );
-
-    const results = Array.isArray(result)
-      ? result
-      : [result];
-
-    if (results.length !== prefectures.length) {
-      throw new Error("地点データ数が一致しません");
-    }
-
-    $("weathergrid").innerHTML = prefectures.map((pref,index) => {
-      const current = results[index] && results[index].current;
-
-      if (!current) {
-        return `
-          <div class="weatherbox">
-            <div class="wlabel">${escapeHtml(pref[0])}</div>
-            <div class="wvalue">--</div>
-            <div class="wcondition">取得失敗</div>
-          </div>
-        `;
-      }
-
-      const label =
-        weatherLabels[current.weather_code] || "天気不明";
-
-      return `
-        <div class="weatherbox">
-          <div class="wlabel">${escapeHtml(pref[0])}</div>
-          <div class="wvalue">${Math.round(current.temperature_2m)}°C</div>
-          <div class="wcondition">${label}</div>
-        </div>
-      `;
-    }).join("");
-
-    $("weatherdesc").textContent =
-      "全国47地点・更新 " +
-      new Date().toLocaleTimeString("ja-JP");
-
-  } catch(error) {
-    console.error("天気取得エラー:",error);
-
-    $("weathergrid").innerHTML =
-      '<div class="muted">天気を取得できません。' +
-      escapeHtml(error.message) + '</div>';
-
-    $("weatherdesc").textContent = "天気情報 未取得";
+async function loadQuakes(){
+ try{
+  const data=await getJSON("https://api.p2pquake.net/v2/history?codes=551&limit=20");
+  const items=data.filter(x=>x.code===551&&x.earthquake).slice(0,10);
+  if(!items.length){
+   $("quakes").textContent="表示できる地震情報はありません";
+   return;
   }
+  const scale={10:"1",20:"2",30:"3",40:"4",45:"5弱",50:"5強",55:"6弱",60:"6強",70:"7"};
+  $("quakes").innerHTML=items.map(x=>{
+   const e=x.earthquake;
+   const name=e.hypocenter?.name||"震源情報なし";
+   const intensity=scale[e.maxScale]||"不明";
+   return `<div class="item"><b>${esc(name)}</b><br><span class="pill">最大震度 ${intensity}</span><div class="sub">${esc(e.time||x.time||"")}</div></div>`;
+  }).join("");
+  const first=items[0].earthquake;
+  $("ticker").textContent="最新の地震情報："+(first.hypocenter?.name||"震源情報なし")+" ／ 詳細はJQuake・気象庁で確認してください";
+ }catch(e){
+  console.error(e);
+  $("quakes").textContent="地震情報取得エラー: "+e.message;
+ }
 }
 
-/* 地震情報 */
-
-async function loadQuakes() {
-  try {
-    const data = await fetchJSON(
-      "https://api.p2pquake.net/v2/history?codes=551&limit=20"
-    );
-
-    const quakes = data.filter(item =>
-      item &&
-      item.code === 551 &&
-      item.earthquake
-    ).slice(0,10);
-
-    if (!quakes.length) {
-      $("quakes").innerHTML =
-        '<div class="muted">現在、表示できる地震情報はありません。</div>';
-
-      $("ticker").textContent =
-        "現在、表示できる地震情報はありません。";
-
-      $("status").textContent = "地震情報 更新完了";
-      return;
-    }
-
-    const scaleNames = {
-      10:"1",
-      20:"2",
-      30:"3",
-      40:"4",
-      45:"5弱",
-      50:"5強",
-      55:"6弱",
-      60:"6強",
-      70:"7"
-    };
-
-    $("quakes").innerHTML = quakes.map(item => {
-      const earthquake = item.earthquake || {};
-
-      const name =
-        earthquake.hypocenter &&
-        earthquake.hypocenter.name
-          ? earthquake.hypocenter.name
-          : "震源情報なし";
-
-      const scale = earthquake.maxScale;
-
-      const intensity = scaleNames[scale]
-        ? "震度 " + scaleNames[scale]
-        : "震度情報";
-
-      const time = earthquake.time || item.time || "";
-
-      const type =
-        item.issue && item.issue.type
-          ? item.issue.type
-          : "地震情報";
-
-      return `
-        <div class="quake">
-          <div class="qrow">
-            <div class="place">${escapeHtml(name)}</div>
-            <div class="intensity">${intensity}</div>
-          </div>
-          <div class="meta">${escapeHtml(type)}</div>
-          <div class="time">${escapeHtml(time)}</div>
-        </div>
-      `;
-    }).join("");
-
-    const first = quakes[0];
-
-    const firstName =
-      first.earthquake.hypocenter &&
-      first.earthquake.hypocenter.name
-        ? first.earthquake.hypocenter.name
-        : "震源情報なし";
-
-    $("ticker").textContent =
-      "最新の地震情報：" + firstName +
-      " ／ 緊急地震速報・津波情報は公式発表も確認してください。";
-
-    $("status").textContent =
-      "地震更新 " +
-      new Date().toLocaleTimeString("ja-JP");
-
-  } catch(error) {
-    console.error("地震取得エラー:",error);
-
-    $("quakes").innerHTML =
-      '<div class="muted">地震情報を取得できません。(' +
-      escapeHtml(error.message) + ')</div>';
-
-    $("ticker").textContent =
-      "地震情報を取得できません。";
-
-    $("status").textContent = "地震情報 未取得";
-  }
+async function loadNews(){
+ try{
+  const p=new URLSearchParams({
+   query:"world",
+   mode:"ArtList",
+   maxrecords:"15",
+   format:"json",
+   sort:"DateDesc",
+   timespan:"24h"
+  });
+  const data=await getJSON("https://api.gdeltproject.org/api/v2/doc/doc?"+p);
+  const articles=(data.articles||[]).slice(0,15);
+  if(!articles.length)throw Error("記事がありません");
+  $("news").innerHTML=articles.map(a=>
+   `<div class="item"><a style="color:#f3f8ff;text-decoration:none" href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a><div class="sub">${esc(a.domain||"")}</div></div>`
+  ).join("");
+ }catch(e){
+  console.error(e);
+  $("news").textContent="ニュース取得エラー: "+e.message;
+ }
 }
-
-/* 世界のニュース */
-
-async function loadNews() {
-  try {
-    const params = new URLSearchParams({
-      query:"world",
-      mode:"ArtList",
-      maxrecords:"15",
-      format:"json",
-      sort:"DateDesc",
-      timespan:"24h"
-    });
-
-    const data = await fetchJSON(
-      "https://api.gdeltproject.org/api/v2/doc/doc?" +
-      params.toString(),
-      20000
-    );
-
-    const articles = (data.articles || []).slice(0,15);
-
-    if (!articles.length) {
-      throw new Error("記事がありません");
-    }
-
-    $("news").innerHTML = articles.map(article => `
-      <div class="news">
-        <a href="${escapeHtml(article.url || "#")}"
-           target="_blank"
-           rel="noopener noreferrer">
-          ${escapeHtml(article.title || "ニュース")}
-        </a>
-        <div class="news-source">
-          ${escapeHtml(article.domain || "")}
-        </div>
-      </div>
-    `).join("");
-
-  } catch(error) {
-    console.error("ニュース取得エラー:",error);
-
-    $("news").innerHTML =
-      '<div class="muted">ニュースを取得できません。(' +
-      escapeHtml(error.message) + ')</div>';
-  }
-}
-
-/* 初回読み込み */
 
 loadWeather();
 loadQuakes();
 loadNews();
-
-/* 自動更新 */
-
-setInterval(loadWeather,10 * 60 * 1000);
-setInterval(loadQuakes,60 * 1000);
-setInterval(loadNews,15 * 60 * 1000);
-
+setInterval(loadWeather,600000);
+setInterval(loadQuakes,60000);
+setInterval(loadNews,900000);
 </script>
 </body>
 </html>
